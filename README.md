@@ -23,7 +23,7 @@ Sur Mac, en ligne de commande : `godot --path <ce dossier>`
 | Rebondir contre un mur | sauter en touchant un mur | A |
 | **Trait d'encre** (8 directions) | X, J ou Maj + direction | X ou RB |
 | Passer les dialogues | Espace ou Entrée | A |
-| Pause | Échap ou P | Select |
+| Pause | Échap ou P | Start |
 
 ## La capacité signature : le Trait d'encre
 Au chapitre 1, le Vieux Pinceau donne à Sépia son dernier geste. Sépia fend l'air d'un coup de pinceau,
