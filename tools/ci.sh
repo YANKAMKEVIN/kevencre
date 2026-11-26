@@ -19,7 +19,7 @@ fi
 
 echo "== Partie jouée par le robot : $*"
 timeout "$LIMIT" xvfb-run -a -s "-screen 0 1280x720x24" \
-  "$GODOT" --path . --rendering-driver opengl3 --fixed-fps 60 -- --shots="$PWD/$OUT/captures" "$@" > "$OUT/partie.log" 2>&1
+  "$GODOT" --path . --rendering-driver opengl3 --fixed-fps 60 -- --shots="$(cd "$OUT" && pwd)/captures" "$@" > "$OUT/partie.log" 2>&1
 code=$?
 grep -E "^(OK|ECHEC|RESULTAT|SHOT|TIMEOUT)" "$OUT/partie.log" || true
 if [ $code -eq 124 ]; then echo "ÉCHEC : le robot n'a pas fini en ${LIMIT} s"; exit 1; fi
