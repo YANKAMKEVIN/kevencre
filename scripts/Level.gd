@@ -50,6 +50,8 @@ var SIGNS := {
 }
 
 # ------------------------------------------------------------------ construction
+var replay := false   # lancé depuis le menu Chapitres : ne remplace pas la sauvegarde
+
 func _ready() -> void:
 	Game.level = num
 	_load_grid()
@@ -82,6 +84,8 @@ func _ready() -> void:
 	cam.global_position = player.global_position
 	cam.reset_smoothing()
 	Game.timing = true
+	if not replay:
+		Game.save_game()  # début de chapitre
 	Game.music(["", "music_meadow", "music_forest", "music_cliffs", "music_boss"][mini(num, 4)])
 	hud.banner("Chapitre %d" % num if num < 4 else "Dernier chapitre", Game.CHAPTERS[mini(num, 4)])
 	if num == 4:

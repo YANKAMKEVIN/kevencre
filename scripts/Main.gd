@@ -28,6 +28,9 @@ func _ready() -> void:
 		print("CHECK FINI")
 		get_tree().quit(1 if bad > 0 else 0)
 		return
+	if "--unit" in args:
+		add_child(load("res://tools/UnitTests.gd").new())
+		return
 	if "--metrics" in args:
 		var m = load("res://tools/Metrics.gd").new()
 		add_child(m)
@@ -40,7 +43,7 @@ func _ready() -> void:
 			return
 	goto("title")
 
-func goto(what: String, arg = null) -> void:
+func goto(what: String, arg = null, replay := false) -> void:
 	if busy:
 		return
 	busy = true
@@ -60,6 +63,7 @@ func goto(what: String, arg = null) -> void:
 		"level":
 			current = load("res://scripts/Level.gd").new()
 			current.num = int(arg)
+			current.replay = replay
 		"ending":
 			current = load("res://scripts/Ending.gd").new()
 	if current is Control:

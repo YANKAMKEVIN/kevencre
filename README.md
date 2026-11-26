@@ -57,3 +57,14 @@ On compte aussi les gouttes d'encre ramassées, le temps et les chutes.
 - `tools/AutoTest.gd` : test qui joue le jeu tout seul et prend des captures (`godot --path . -- --shots=/chemin`) ; `tools/Metrics.gd` mesure les sauts (`-- --metrics`).
 
 Pour modifier un niveau : édite `tools/build_levels.py`, puis relance `python3 tools/build_levels.py` et `python3 tools/paint.py`.
+
+## Sauvegarde
+La partie est sauvegardée au début de chaque chapitre et à chaque chevalet touché (`user://sauvegarde.json`) ; « Continuer » apparaît alors sur l'écran titre et reprend au dernier chevalet, avec les pigments, les gouttes, les chutes, le temps et les couleurs déjà rendues au paysage. Le menu « Chapitres » sert au rejeu et n'écrase pas la sauvegarde.
+Le format est versionné (`scripts/SaveData.gd`, `VERSION`) : toute évolution incrémente la version et ajoute une migration ; une sauvegarde abîmée ou plus récente que le jeu est ignorée.
+
+## Tests
+```bash
+godot --headless --path . -- --check   # tous les scripts se chargent
+godot --headless --path . -- --unit    # tests unitaires (sauvegarde)
+GODOT=godot tools/ci.sh                # le robot joue toute la partie (comme la CI)
+```

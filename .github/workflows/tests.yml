@@ -30,10 +30,12 @@ jobs:
           echo "7de56444b130b10af84d19c7e0cf63cf9e9937ee4ba94364c3b7dd114253ca21  $RUNNER_TEMP/godot.zip" | sha256sum --check
           unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
           echo "GODOT=$RUNNER_TEMP/godot/Godot_v4.3-stable_linux.x86_64" >> "$GITHUB_ENV"
-      - name: Tous les scripts se chargent
+      - name: Tous les scripts se chargent, tests unitaires
         run: |
           "$GODOT" --headless --path . --import > /dev/null 2>&1 || true
+          "$GODOT" --headless --path . --import > /dev/null 2>&1 || true
           "$GODOT" --headless --path . -- --check
+          "$GODOT" --headless --path . -- --unit
       - name: Le robot joue jusqu'à la fin
         run: tools/ci.sh
       - name: Captures

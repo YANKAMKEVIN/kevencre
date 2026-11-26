@@ -98,11 +98,14 @@ func _ready() -> void:
 	for i in 40:
 		motes.append([Vector2(randf() * 1400, randf() * 800), randf_range(10, 40), randi() % 5, randf() * TAU])
 
+func _main_items() -> Array:
+	return (["Continuer"] if not Game.read_save().is_empty() else []) + items
+
 func _build() -> void:
 	for c in menu.get_children():
 		c.queue_free()
 	labels.clear()
-	var list := items if mode == "main" else ["Chapitre 1 · Les Prés Délavés", "Chapitre 2 · La Forêt d'Aquarelle", "Chapitre 3 · Les Falaises d'Ocre", "Chapitre 4 · Le Délaveur", "Retour"]
+	var list := _main_items() if mode == "main" else ["Chapitre 1 · Les Prés Délavés", "Chapitre 2 · La Forêt d'Aquarelle", "Chapitre 3 · Les Falaises d'Ocre", "Chapitre 4 · Le Délaveur", "Retour"]
 	for s in list:
 		var l := Label.new()
 		l.text = s
@@ -155,18 +158,22 @@ func _process(delta: float) -> void:
 
 func _choose() -> void:
 	if mode == "main":
-		match sel:
-			0:
+		match labels[sel].text:
+			"Continuer":
+				var n := Game.load_game()
+				if n > 0:
+					Game.main.goto("level", n)
+			"Nouvelle partie":
 				Game.new_game()
 				Game.main.goto("intro")
-			1:
+			"Chapitres":
 				mode = "chapters"
 				_build()
-			2:
+			"Commandes":
 				mode = "help"
 				menu_panel.visible = false
 				help.visible = true
-			3:
+			"Quitter":
 				get_tree().quit()
 	else:
 		if sel == 4:
@@ -176,7 +183,7 @@ func _choose() -> void:
 		Game.new_game()
 		var n := sel + 1
 		Game.has_brush = n > 1
-		Game.main.goto("level", n)
+		Game.main.goto("level", n, true)  # rejeu : la sauvegarde n'est pas écrasée
 
 func _deco(c: Control) -> void:
 	for m in motes:
