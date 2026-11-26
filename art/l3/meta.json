@@ -1,0 +1,42 @@
+{
+ "scale": 2,
+ "chunks": [
+  {
+   "file": "terrain_0.png",
+   "x": 0,
+   "y": 0
+  },
+  {
+   "file": "terrain_1.png",
+   "x": 2048,
+   "y": 0
+  }
+ ],
+ "covers": [
+  {
+   "file": "cover_0.png",
+   "x": 96,
+   "y": 1488,
+   "tx": 2,
+   "ty": 31,
+   "tw": 3,
+   "th": 4
+  }
+ ],
+ "sky": "sky.png",
+ "bg": [
+  {
+   "file": "bg0.png",
+   "motion": 0.06,
+   "motion_y": 0.0,
+   "y": 0
+  },
+  {
+   "file": "bg1.png",
+   "motion": 0.3,
+   "motion_y": 0.3,
+   "y": 0,
+   "mirror_y": true
+  }
+ ]
+}

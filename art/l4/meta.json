@@ -1,0 +1,13 @@
+{
+ "scale": 2,
+ "chunks": [
+  {
+   "file": "terrain_0.png",
+   "x": 0,
+   "y": 0
+  }
+ ],
+ "covers": [],
+ "sky": "sky.png",
+ "bg": []
+}

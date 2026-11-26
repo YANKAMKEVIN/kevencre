@@ -1,0 +1,72 @@
+{
+ "scale": 2,
+ "chunks": [
+  {
+   "file": "terrain_0.png",
+   "x": 0,
+   "y": 0
+  },
+  {
+   "file": "terrain_1.png",
+   "x": 2048,
+   "y": 0
+  },
+  {
+   "file": "terrain_2.png",
+   "x": 4096,
+   "y": 0
+  },
+  {
+   "file": "terrain_3.png",
+   "x": 6144,
+   "y": 0
+  },
+  {
+   "file": "terrain_4.png",
+   "x": 8192,
+   "y": 0
+  },
+  {
+   "file": "terrain_5.png",
+   "x": 10240,
+   "y": 0
+  },
+  {
+   "file": "terrain_6.png",
+   "x": 12288,
+   "y": 0
+  }
+ ],
+ "covers": [
+  {
+   "file": "cover_0.png",
+   "x": 4320,
+   "y": 912,
+   "tx": 90,
+   "ty": 19,
+   "tw": 5,
+   "th": 4
+  }
+ ],
+ "sky": "sky.png",
+ "bg": [
+  {
+   "file": "bg0.png",
+   "motion": 0.1,
+   "motion_y": 0.0,
+   "y": 0
+  },
+  {
+   "file": "bg1.png",
+   "motion": 0.25,
+   "motion_y": 0.0,
+   "y": 60
+  },
+  {
+   "file": "bg2.png",
+   "motion": 0.45,
+   "motion_y": 0.0,
+   "y": 140
+  }
+ ]
+}
