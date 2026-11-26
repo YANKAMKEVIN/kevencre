@@ -94,7 +94,10 @@ func run() -> void:
 	main.goto("intro")
 	await w(1.4)
 	await shot("01_conte")
-	for i in 3:
+	# on appuie jusqu'à quitter le conte (une pression pendant le délai anti-rebond est ignorée)
+	for i in 10:
+		if lvl() != null and "num" in lvl():
+			break
 		await press("jump")
 		await w(0.7)
 	await until(func(): return lvl() != null and "num" in lvl(), 5.0)
@@ -133,9 +136,16 @@ func run() -> void:
 			enemy = n
 			break
 	if enemy:
-		p.global_position = enemy.global_position + Vector2(0, -120)
-		p.velocity = Vector2(0, 200)
-		await w(0.8)
+		# un panneau peut ouvrir un dialogue (arbre en pause) : on attend qu'il soit fermé, puis on retente
+		for essai in 4:
+			await until(func(): return not (l.hud and l.hud.dlg_active), 5.0)
+			if not is_instance_valid(enemy):
+				break
+			p.global_position = enemy.global_position + Vector2(0, -120)
+			p.velocity = Vector2(0, 200)
+			await w(0.8)
+			if not is_instance_valid(enemy):
+				break
 		check(not is_instance_valid(enemy), "sauter sur une Tache la repeint")
 		await shot("12_tache_repeinte")
 	# ---------------- secret 1 (pigment dans le pilier)
@@ -188,7 +198,8 @@ func run() -> void:
 	tp(g.x, g.y)
 	await w(1.5)
 	await shot("18_fin_chapitre1")
-	await until(func(): return lvl() != l and lvl() != null and "num" in lvl() and lvl().num == 2, 10.0)
+	var old_id1: int = l.get_instance_id()
+	await until(func(): return lvl() != null and lvl().get_instance_id() != old_id1 and lvl() != null and "num" in lvl() and lvl().num == 2, 10.0)
 	check(lvl().num == 2, "la sortie mène au chapitre 2")
 	# ---------------- chapitre 2
 	await w(2.0)
@@ -214,7 +225,8 @@ func run() -> void:
 	await shot("23_pigment_foret")
 	g = find_char("G")[0]
 	tp(g.x, g.y)
-	await until(func(): return lvl() != l and lvl() != null and "num" in lvl() and lvl().num == 3, 10.0)
+	var old_id2: int = l.get_instance_id()
+	await until(func(): return lvl() != null and lvl().get_instance_id() != old_id2 and lvl() != null and "num" in lvl() and lvl().num == 3, 10.0)
 	check(lvl().num == 3, "la sortie mène au chapitre 3")
 	# ---------------- chapitre 3
 	await w(2.0)
@@ -234,7 +246,8 @@ func run() -> void:
 	await shot("32_falaises_haut")
 	g = find_char("G")[0]
 	tp(g.x, g.y)
-	await until(func(): return lvl() != l and lvl() != null and "num" in lvl() and lvl().num == 4, 10.0)
+	var old_id3: int = l.get_instance_id()
+	await until(func(): return lvl() != null and lvl().get_instance_id() != old_id3 and lvl() != null and "num" in lvl() and lvl().num == 4, 10.0)
 	check(lvl().num == 4, "la sortie mène au Délaveur")
 	# ---------------- boss
 	await w(2.0)
@@ -286,7 +299,8 @@ func run() -> void:
 	p.invuln = 0
 	await w(3.5)
 	await shot("48_victoire")
-	await until(func(): return lvl() != l and lvl() != null and not ("num" in lvl()), 60.0)
+	var old_id4: int = l.get_instance_id()
+	await until(func(): return lvl() != null and lvl().get_instance_id() != old_id4 and lvl() != null and not ("num" in lvl()), 60.0)
 	await w(1.5)
 	await shot("50_fin")
 	check(Game.pigment_count() == 5, "fin avec les 5 pigments")

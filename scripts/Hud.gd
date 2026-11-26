@@ -290,7 +290,10 @@ func _draw_hud() -> void:
 		ctl.draw_line(bc + Vector2(-12, 10), bc + Vector2(14, -10), col.darkened(0.3), 10.0, true)
 		ctl.draw_line(bc + Vector2(-12, 10), bc + Vector2(14, -10), col, 6.0, true)
 		ctl.draw_circle(bc + Vector2(14, -10), 5, col)
-		ctl.draw_string(load("res://fonts/Nunito.ttf"), bc + Vector2(26, 7), "Trait d'encre", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color(Game.INK, 0.7 if p.can_dash else 0.35))
+		var fn: Font = load("res://fonts/Nunito.ttf")
+		# contour papier : le libellé reste lisible sur un ciel clair comme sur une falaise sombre
+		ctl.draw_string_outline(fn, bc + Vector2(26, 7), "Trait d'encre", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, 6, Color(Game.PAPER, 0.85))
+		ctl.draw_string(fn, bc + Vector2(26, 7), "Trait d'encre", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color(Game.INK, 0.95 if p.can_dash else 0.5))
 	# barre de vie du Délaveur
 	var b = level.boss
 	if b and b.started and not b.dead:
