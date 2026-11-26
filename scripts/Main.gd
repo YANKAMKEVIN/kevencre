@@ -18,13 +18,15 @@ func _ready() -> void:
 	cl.add_child(fade)
 	var args := OS.get_cmdline_user_args()
 	if "--check" in args:
+		var bad := 0
 		for d in ["res://scripts/", "res://scripts/ent/", "res://tools/"]:
 			for f in DirAccess.get_files_at(d):
 				if f.ends_with(".gd") and f != "check.gd":
 					if load(d + f) == null:
 						print("ECHEC ", d + f)
+						bad += 1
 		print("CHECK FINI")
-		get_tree().quit()
+		get_tree().quit(1 if bad > 0 else 0)
 		return
 	if "--metrics" in args:
 		var m = load("res://tools/Metrics.gd").new()

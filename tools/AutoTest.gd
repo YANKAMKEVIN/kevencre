@@ -20,7 +20,7 @@ func _ready() -> void:
 	await run()
 	print("RESULTAT : %d échec(s)" % fails)
 	print("TEST FINI")
-	get_tree().quit()
+	get_tree().quit(1 if fails > 0 else 0)  # code de sortie lu par la CI
 
 func w(s: float) -> void:
 	await get_tree().create_timer(s, true, false, true).timeout
