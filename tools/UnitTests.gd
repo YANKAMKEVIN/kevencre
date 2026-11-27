@@ -16,6 +16,7 @@ func _ready() -> void:
 	_test_migration()
 	_test_rejets()
 	_test_fichier()
+	_test_version()
 	print("RESULTAT : %d test(s), %d échec(s)" % [count, fails])
 	get_tree().quit(1 if fails > 0 else 0)
 
@@ -70,3 +71,9 @@ func _test_fichier() -> void:
 	DirAccess.remove_absolute(Game.save_path)
 	Game.save_path = old_path
 	Game.new_game()
+
+func _test_version() -> void:
+	var v := Game.version()
+	check(v == "1.1.0", "numéro de version lu dans project.godot (%s)" % v)
+	var parts := v.split(".")
+	check(parts.size() == 3 and Array(parts).all(func(x: String) -> bool: return x.is_valid_int()), "version au format majeur.mineur.correctif")

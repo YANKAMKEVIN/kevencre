@@ -11,7 +11,7 @@ func _ready() -> void:
 	z_index = 6
 
 func _physics_process(delta: float) -> void:
-	var p = level.player
+	var p: Variant = level.player
 	var inside := false
 	if p:
 		var c := Vector2i(floori(p.global_position.x / Game.TS), floori((p.global_position.y - 20) / Game.TS))

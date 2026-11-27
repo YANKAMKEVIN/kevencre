@@ -1,4 +1,4 @@
-# Kevencre · la dernière goutte d'encre
+# Kevencre · v1.1.0 · la dernière goutte d'encre
 
 Un jeu de plateforme 2D original, peint à l'aquarelle, fait avec **Godot 4.3**.
 Tranche jouable : 3 chapitres + le combat contre le Délaveur, environ 15 minutes.
@@ -62,9 +62,12 @@ Pour modifier un niveau : édite `tools/build_levels.py`, puis relance `python3 
 La partie est sauvegardée au début de chaque chapitre et à chaque chevalet touché (`user://sauvegarde.json`) ; « Continuer » apparaît alors sur l'écran titre et reprend au dernier chevalet, avec les pigments, les gouttes, les chutes, le temps et les couleurs déjà rendues au paysage. Le menu « Chapitres » sert au rejeu et n'écrase pas la sauvegarde.
 Le format est versionné (`scripts/SaveData.gd`, `VERSION`) : toute évolution incrémente la version et ajoute une migration ; une sauvegarde abîmée ou plus récente que le jeu est ignorée.
 
+## Version
+Le numéro est dans `project.godot` (`application/config/version`), lu par `Game.version()` et affiché sur l'écran titre.
+
 ## Tests
 ```bash
 godot --headless --path . -- --check   # tous les scripts se chargent
-godot --headless --path . -- --unit    # tests unitaires (sauvegarde)
+godot --headless --path . -- --unit    # tests unitaires (sauvegarde, version)
 GODOT=godot tools/ci.sh                # le robot joue toute la partie (comme la CI)
 ```

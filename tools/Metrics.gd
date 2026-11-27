@@ -1,9 +1,9 @@
 extends Node
 ## Mesure les capacités de Sépia (hauteur de saut, distances...) dans une arène de test.
 
-var main
-var L
-var P
+var main: Variant = null
+var L: Variant = null
+var P: Variant = null
 
 func _ready() -> void:
 	main = get_parent()

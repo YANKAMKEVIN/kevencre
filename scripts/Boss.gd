@@ -152,7 +152,7 @@ func _physics_process(delta: float) -> void:
 	flash = maxf(0, flash - delta * 3)
 	core_cool -= delta
 	roar_t -= delta
-	var p = level.player
+	var p: Variant = level.player
 	# corps
 	var low := home.y + (150.0 if exposed else 0.0)
 	body_y = lerpf(body_y, low, 1.0 - exp(-4.0 * delta))
@@ -223,7 +223,7 @@ func _physics_process(delta: float) -> void:
 func core_pos() -> Vector2:
 	return position + Vector2(0, 46)
 
-func _hit(p) -> void:
+func _hit(p: Variant) -> void:
 	hp -= 1
 	core_cool = 0.6
 	exposed = false

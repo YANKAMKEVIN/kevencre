@@ -52,7 +52,7 @@ static func parse(text: String) -> Dictionary:
 ## les nombres que JSON relit en flottants.
 static func migrate(d: Dictionary) -> Dictionary:
 	var out := d.duplicate(true)
-	var v = out.get("version", null)
+	var v: Variant = out.get("version", null)
 	if typeof(v) != TYPE_INT and typeof(v) != TYPE_FLOAT:
 		return {}
 	var version := int(v)
@@ -86,7 +86,7 @@ static func is_valid(d: Dictionary) -> bool:
 	if not (d.get("pigments") is Dictionary) or d["pigments"].size() > MAX_PIGMENTS:
 		return false
 	for k in d["pigments"]:
-		var i = d["pigments"][k]
+		var i: Variant = d["pigments"][k]
 		if typeof(i) != TYPE_INT or i < 0 or i >= MAX_PIGMENTS:
 			return false
 	if not (d.get("drops_level") is Array):
@@ -105,11 +105,11 @@ static func is_valid(d: Dictionary) -> bool:
 	return true
 
 
-static func _level_key(n) -> bool:
+static func _level_key(n: Variant) -> bool:
 	return str(n).is_valid_int() and int(n) >= 1 and int(n) <= LEVELS
 
 
-static func _numbers(a, count: int) -> bool:
+static func _numbers(a: Variant, count: int) -> bool:
 	if not (a is Array) or a.size() != count:
 		return false
 	for x in a:

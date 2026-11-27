@@ -26,7 +26,7 @@ func check_player() -> void:
 		return
 	p.hurt(global_position)
 
-func repaint(_p) -> void:
+func repaint(_p: Variant) -> void:
 	alive = false
 	var c: Color = Game.PALETTE[randi() % Game.PALETTE.size()]
 	level.fx.burst(global_position, 30)

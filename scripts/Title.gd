@@ -93,6 +93,13 @@ func _ready() -> void:
 	help.add_child(hl)
 	help.visible = false
 	add_child(help)
+	var ver := Label.new()
+	ver.text = "Kevencre · v" + Game.version()
+	ver.add_theme_font_size_override("font_size", 16)
+	ver.add_theme_color_override("font_color", Color(Game.INK, 0.55))
+	ver.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	ver.position = Vector2(-200, -34)
+	add_child(ver)
 	_build()
 	Game.music("music_title")
 	for i in 40:

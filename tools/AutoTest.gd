@@ -3,7 +3,7 @@ extends Node
 ## godot --path . -- --shots=/dossier
 
 var out := "/tmp/kevencre_shots"
-var main
+var main: Variant = null
 var log_lines: Array = []
 var auto_dialogue := true
 var _tick := 0.0
@@ -53,15 +53,15 @@ func _process(delta: float) -> void:
 	if _tick < 0.2:
 		return
 	_tick = 0.0
-	var c = main.current
+	var c: Variant = main.current
 	if auto_dialogue and c and "hud" in c and c.hud and c.hud.dlg_active:
 		press("jump")
 
-func lvl():
+func lvl() -> Variant:
 	return main.current
 
 func tp(tx: float, ty: float) -> void:
-	var l = lvl()
+	var l: Variant = lvl()
 	l.player.global_position = Vector2((tx + 0.5) * 48, (ty + 1) * 48)
 	l.player.velocity = Vector2.ZERO
 	l.cam.global_position = l.player.global_position
@@ -69,7 +69,7 @@ func tp(tx: float, ty: float) -> void:
 
 func find_char(ch: String) -> Array:
 	var res: Array = []
-	var l = lvl()
+	var l: Variant = lvl()
 	for y in l.H:
 		for x in l.W:
 			if l.grid[y][x] == ch:
@@ -104,9 +104,9 @@ func run() -> void:
 	await w(1.2)
 	check(lvl() != null and "num" in lvl() and lvl().num == 1, "le conte mène au chapitre 1")
 	await shot("10_chapitre1")
-	var l = lvl()
+	var l: Variant = lvl()
 	# ---------------- un vrai bout de course : courir et sauter le premier trou
-	var p = l.player
+	var p: Variant = l.player
 	p.auto_input = {"x": 1.0, "y": 0.0, "jump": false, "dash": false}
 	var t0 := 0.0
 	var jumped := false
@@ -130,7 +130,7 @@ func run() -> void:
 	p.auto_input = {}
 	# ---------------- repeindre une Tache en lui sautant dessus
 	var taches := get_tree().get_nodes_in_group("_none")
-	var enemy = null
+	var enemy: Variant = null
 	for n in l.world.get_children():
 		if n.get_script() and n.get_script().resource_path.ends_with("Tache.gd"):
 			enemy = n
@@ -255,13 +255,16 @@ func run() -> void:
 	l = lvl()
 	p = l.player
 	await until(func(): return l.intro_done, 30.0)
-	var boss = l.boss
-	var start_t := Time.get_ticks_msec()
+	var boss: Variant = l.boss
+	# Temps de jeu (images physiques), pas l'horloge murale : avec --fixed-fps 60 une machine
+	# chargée joue la même partie, plus lentement.
+	var frames := 0
 	var shots_done := {}
 	var hits_taken := 0
 	p.hurt_signal.connect(func(): hits_taken += 1)
-	while is_instance_valid(boss) and not boss.dead and Time.get_ticks_msec() - start_t < 240000:
+	while is_instance_valid(boss) and not boss.dead and frames < 240 * Engine.physics_ticks_per_second:
 		await get_tree().physics_frame
+		frames += 1
 		if p.dead or p.frozen:
 			continue
 		p.invuln = 99.0     # le robot ne teste pas l'esquive
@@ -294,7 +297,7 @@ func run() -> void:
 		if boss.exposed and not shots_done.has("open"):
 			shots_done["open"] = true
 			await shot("47_coeur_ouvert")
-	var dur := (Time.get_ticks_msec() - start_t) / 1000.0
+	var dur := float(frames) / Engine.physics_ticks_per_second
 	check(is_instance_valid(boss) and boss.dead, "le Délaveur est vaincu (en %.0f s, %d coups encaissés par le robot)" % [dur, hits_taken])
 	p.invuln = 0
 	await w(3.5)
