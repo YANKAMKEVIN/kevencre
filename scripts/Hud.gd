@@ -7,7 +7,7 @@ var level: Node
 var ctl: Control
 var hint_panel: PanelContainer
 var hint_label: Label
-var hint_owner = null
+var hint_owner: Variant = null
 var banner_box: VBoxContainer
 var toast_box: PanelContainer
 var toast_title: Label
@@ -136,7 +136,7 @@ func _label(size: int, font: Font = null) -> Label:
 	return l
 
 # ------------------------------------------------------------------ messages
-func show_hint(text: String, who) -> void:
+func show_hint(text: String, who: Variant) -> void:
 	if text == "":
 		return
 	hint_owner = who
@@ -144,7 +144,7 @@ func show_hint(text: String, who) -> void:
 	var tw := create_tween()
 	tw.tween_property(hint_panel, "modulate:a", 1.0, 0.25)
 
-func hide_hint(who) -> void:
+func hide_hint(who: Variant) -> void:
 	if who != hint_owner:
 		return
 	hint_owner = null
@@ -258,7 +258,7 @@ func _set_pause(on: bool) -> void:
 	Game.sfx("blip", -8, 0.8 if on else 1.1)
 
 func _draw_hud() -> void:
-	var p = level.player
+	var p: Variant = level.player
 	if p == null:
 		return
 	shown_hp = lerpf(shown_hp, p.hp, 0.3)
@@ -295,7 +295,7 @@ func _draw_hud() -> void:
 		ctl.draw_string_outline(fn, bc + Vector2(26, 7), "Trait d'encre", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, 6, Color(Game.PAPER, 0.85))
 		ctl.draw_string(fn, bc + Vector2(26, 7), "Trait d'encre", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color(Game.INK, 0.95 if p.can_dash else 0.5))
 	# barre de vie du Délaveur
-	var b = level.boss
+	var b: Variant = level.boss
 	if b and b.started and not b.dead:
 		var vs0 := ctl.size
 		var bw := 420.0

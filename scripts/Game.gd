@@ -59,6 +59,10 @@ func _process(delta: float) -> void:
 	if timing and not get_tree().paused:
 		time += delta
 
+## Numéro de version (project.godot, application/config/version).
+func version() -> String:
+	return str(ProjectSettings.get_setting("application/config/version", "0.0.0"))
+
 func new_game() -> void:
 	level = 1
 	has_brush = false

@@ -27,7 +27,7 @@ func setup(w: int) -> void:
 
 func _physics_process(delta: float) -> void:
 	t += delta
-	var p = level.player
+	var p: Variant = level.player
 	if gone > 0.0:
 		gone -= delta
 		if gone <= 0.0:
@@ -36,7 +36,7 @@ func _physics_process(delta: float) -> void:
 		queue_redraw()
 		return
 	if timer < 0.0 and p and p.on_floor:
-		var c = p.get_last_slide_collision()
+		var c: Variant = p.get_last_slide_collision()
 		if c and c.get_collider() == self:
 			timer = 0.5
 			Game.sfx("paper", -10, 1.0)

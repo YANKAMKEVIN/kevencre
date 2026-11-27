@@ -131,7 +131,7 @@ func _physics_process(delta: float) -> void:
 	on_stroke = false
 	if on_floor:
 		var c := get_last_slide_collision()
-		var col = c.get_collider() if c else null
+		var col: Node = c.get_collider() as Node if c else null
 		on_stroke = col != null and col.is_in_group("stroke")
 		coyote = COYOTE
 		jumping = false

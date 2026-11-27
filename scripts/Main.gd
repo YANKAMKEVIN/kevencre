@@ -32,18 +32,18 @@ func _ready() -> void:
 		add_child(load("res://tools/UnitTests.gd").new())
 		return
 	if "--metrics" in args:
-		var m = load("res://tools/Metrics.gd").new()
+		var m: Node = load("res://tools/Metrics.gd").new()
 		add_child(m)
 		return
 	for a in args:
 		if a.begins_with("--shots") or a.begins_with("--test"):
-			var t = load("res://tools/AutoTest.gd").new()
+			var t: Node = load("res://tools/AutoTest.gd").new()
 			t.name = "AutoTest"
 			add_child(t)
 			return
 	goto("title")
 
-func goto(what: String, arg = null, replay := false) -> void:
+func goto(what: String, arg: Variant = null, replay := false) -> void:
 	if busy:
 		return
 	busy = true

@@ -152,7 +152,7 @@ func _meta() -> Dictionary:
 	var p := "res://art/l%d/meta.json" % num
 	if not FileAccess.file_exists(p):
 		return {}
-	var j = JSON.parse_string(FileAccess.get_file_as_string(p))
+	var j: Variant = JSON.parse_string(FileAccess.get_file_as_string(p))
 	return j if j is Dictionary else {}
 
 func _tex(path: String) -> Texture2D:
@@ -294,13 +294,13 @@ func _spawn_entities() -> void:
 					start_pos = foot
 				"*":
 					if not Game.drops_level.has(key):
-						var d = _ent("Drop", mid, x, y)
+						var d: Variant = _ent("Drop", mid, x, y)
 						d.key = key
 				"P":
 					var idx: int = min(pig_base + pig_i, 4)
 					pig_i += 1
 					if not Game.pigments.has(key):
-						var p = _ent("Pigment", mid, x, y)
+						var p: Variant = _ent("Pigment", mid, x, y)
 						p.key = key
 						p.index = idx
 				"D":
@@ -328,7 +328,7 @@ func _spawn_entities() -> void:
 						var x2 := x
 						while ch(x2 + 1, y) == "^":
 							x2 += 1
-						var th = _ent("Thorns", Vector2(x * TS, y * TS), x, y)
+						var th: Variant = _ent("Thorns", Vector2(x * TS, y * TS), x, y)
 						th.width = x2 - x + 1
 						th.ceiling = ch(x, y - 1) == "#" and ch(x, y + 1) != "#"
 				"c":
@@ -508,7 +508,7 @@ func new_stroke(dir: Vector2, facing: int) -> Node2D:
 	s.setup(dir, facing, Game.next_stroke_color())
 	strokes.append(s)
 	while strokes.size() > 3:
-		var old = strokes.pop_front()
+		var old: Variant = strokes.pop_front()
 		if is_instance_valid(old):
 			old.queue_free()
 	return s
@@ -547,7 +547,7 @@ func restore_at(p: Vector2, r := 1500.0) -> void:
 func restore_small(p: Vector2) -> void:
 	restore_at(p, 230.0)
 
-func hazard_hit(p) -> void:
+func hazard_hit(p: Variant) -> void:
 	if hazard_lock or p.dead or finished:
 		return
 	hazard_lock = true
@@ -582,7 +582,7 @@ func on_pigment(info: Array, idx: int) -> void:
 	restore_at(player.global_position, 600)
 	hud.toast("Pigment légendaire : " + info[0], info[1] + "\n(+1 goutte de vie)", Game.PALETTE[idx])
 
-func shrine_event(shrine) -> void:
+func shrine_event(shrine: Node2D) -> void:
 	player.frozen = true
 	Game.sfx("pigment", -4, 0.8)
 	await get_tree().create_timer(0.5).timeout
