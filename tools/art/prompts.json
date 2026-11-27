@@ -1,0 +1,122 @@
+{
+ "style": "Aquarelle traditionnelle sur papier épais grain torchon : lavis transparents, bords qui fusent, pigments qui granulent, petites coulures et auréoles, réserves de blanc du papier, palette de pigments purs (outremer, vermillon, ocre jaune, viridian, pourpre, sépia). Douce, poétique, illustration de livre jeunesse haut de gamme. Aucun texte, aucun logo, aucune lettre, aucune signature, aucun filigrane.",
+ "fond_detourage": "Fond uni magenta pur #FF00FF sans dégradé au-dessus de la silhouette, pour être détouré ensuite.",
+ "images": [
+  {
+   "fichier": "titre",
+   "taille": "1280x720",
+   "detourer": false,
+   "sortie": "titre.png",
+   "prompt": "Écran titre du jeu « Kevencre » : Sépia, une petite goutte d'encre noire aux grands yeux blancs et à l'écharpe rouge qui flotte, court sur une colline de prés. Derrière elle, un trait de pinceau arc-en-ciel s'élance vers le ciel, et partout où il passe le paysage reprend ses couleurs ; le reste du monde, à gauche, est encore délavé en gris. Le tiers haut est un ciel clair et calme pour poser le titre."
+  },
+  {
+   "fichier": "intro",
+   "taille": "1280x720",
+   "detourer": false,
+   "sortie": "intro.png",
+   "prompt": "Le Délaveur : un géant de térébenthine grise, mou et ruisselant, penché sur un paysage d'aquarelle dont il aspire les couleurs en longs filets colorés qui montent vers sa bouche. En bas, minuscule, Sépia la goutte d'encre noire à l'écharpe rouge le regarde. Ambiance inquiétante mais douce, le gris gagne le paysage."
+  },
+  {
+   "fichier": "fin",
+   "taille": "1280x720",
+   "detourer": false,
+   "sortie": "fin.png",
+   "prompt": "Fin du jeu : le monde d'aquarelle a retrouvé ses couleurs, prés, forêt et falaises ocre éclatants au soleil couchant. Sépia, la petite goutte d'encre noire à l'écharpe rouge, est assise au bord d'une falaise et regarde l'horizon. Une flaque grise s'évapore au loin. Paisible et chaleureux."
+  },
+  {
+   "fichier": "fin_vraie",
+   "taille": "1280x720",
+   "detourer": false,
+   "sortie": "fin_vraie.png",
+   "prompt": "Vraie fin : fête des couleurs. Sépia, la petite goutte d'encre noire à l'écharpe rouge, danse au milieu de cinq grands traits de pigments légendaires (outremer, vermillon, ocre, viridian, pourpre) qui tourbillonnent dans le ciel ; un vieux pinceau bienveillant planté dans l'herbe à côté d'elle. Le paysage entier éclate de couleurs, lumière dorée."
+  },
+  {
+   "fichier": "l1_ciel",
+   "taille": "640x360",
+   "detourer": false,
+   "sortie": "l1/sky.png",
+   "raccord": 48,
+   "prompt": "Ciel seul à l'aquarelle, sans aucun sol ni relief ni objet : ciel bleu pâle de printemps avec quelques nuages blancs légers. Lavis larges et doux, le bas du ciel un peu plus clair (horizon)."
+  },
+  {
+   "fichier": "l2_ciel",
+   "taille": "640x360",
+   "detourer": false,
+   "sortie": "l2/sky.png",
+   "raccord": 48,
+   "prompt": "Ciel seul à l'aquarelle, sans aucun sol ni relief ni objet : ciel vert d'eau et gris tendre de sous-bois humide, brume claire. Lavis larges et doux, le bas du ciel un peu plus clair (horizon)."
+  },
+  {
+   "fichier": "l3_ciel",
+   "taille": "640x360",
+   "detourer": false,
+   "sortie": "l3/sky.png",
+   "raccord": 48,
+   "prompt": "Ciel seul à l'aquarelle, sans aucun sol ni relief ni objet : ciel de fin d'après-midi pêche et orangé, nuages dorés. Lavis larges et doux, le bas du ciel un peu plus clair (horizon)."
+  },
+  {
+   "fichier": "l4_ciel",
+   "taille": "640x360",
+   "detourer": false,
+   "sortie": "l4/sky.png",
+   "raccord": 48,
+   "prompt": "Ciel seul à l'aquarelle, sans aucun sol ni relief ni objet : ciel d'orage violet sombre, nuages lourds gris-mauve, lueurs pourpres. Lavis larges et doux, le bas du ciel un peu plus clair (horizon)."
+  },
+  {
+   "fichier": "l1_bg0",
+   "taille": "1024x360",
+   "detourer": true,
+   "sortie": "l1/bg0.png",
+   "raccord": 96,
+   "prompt": "Bande de décor de jeu de plateforme 2D en défilement horizontal, vue de profil, qui doit pouvoir se répéter à l'infini vers la gauche et la droite (rien de remarquable près des bords gauche et droit). Au-dessus de la silhouette, fond uni magenta pur #FF00FF sans dégradé (sera détouré). La silhouette remplit toute la moitié basse jusqu'au bord inférieur, sans trou, sans personnage. Sujet : montagnes lointaines bleu lavande très pâles, presque fondues dans l'air."
+  },
+  {
+   "fichier": "l1_bg1",
+   "taille": "1024x360",
+   "detourer": true,
+   "sortie": "l1/bg1.png",
+   "raccord": 96,
+   "prompt": "Bande de décor de jeu de plateforme 2D en défilement horizontal, vue de profil, qui doit pouvoir se répéter à l'infini vers la gauche et la droite (rien de remarquable près des bords gauche et droit). Au-dessus de la silhouette, fond uni magenta pur #FF00FF sans dégradé (sera détouré). La silhouette remplit toute la moitié basse jusqu'au bord inférieur, sans trou, sans personnage. Sujet : collines vertes arrondies aux bosquets d'arbres ronds, plan moyen."
+  },
+  {
+   "fichier": "l1_bg2",
+   "taille": "1024x360",
+   "detourer": true,
+   "sortie": "l1/bg2.png",
+   "raccord": 96,
+   "prompt": "Bande de décor de jeu de plateforme 2D en défilement horizontal, vue de profil, qui doit pouvoir se répéter à l'infini vers la gauche et la droite (rien de remarquable près des bords gauche et droit). Au-dessus de la silhouette, fond uni magenta pur #FF00FF sans dégradé (sera détouré). La silhouette remplit toute la moitié basse jusqu'au bord inférieur, sans trou, sans personnage. Sujet : prés proches vert vif avec haies, arbres ronds et fleurs des champs, premier plan de fond."
+  },
+  {
+   "fichier": "l2_bg0",
+   "taille": "1024x360",
+   "detourer": true,
+   "sortie": "l2/bg0.png",
+   "raccord": 96,
+   "prompt": "Bande de décor de jeu de plateforme 2D en défilement horizontal, vue de profil, qui doit pouvoir se répéter à l'infini vers la gauche et la droite (rien de remarquable près des bords gauche et droit). Au-dessus de la silhouette, fond uni magenta pur #FF00FF sans dégradé (sera détouré). La silhouette remplit toute la moitié basse jusqu'au bord inférieur, sans trou, sans personnage. Sujet : lisière de forêt lointaine bleu-vert noyée de brume, cimes arrondies."
+  },
+  {
+   "fichier": "l2_bg1",
+   "taille": "1024x360",
+   "detourer": true,
+   "sortie": "l2/bg1.png",
+   "raccord": 96,
+   "prompt": "Bande de décor de jeu de plateforme 2D en défilement horizontal, vue de profil, qui doit pouvoir se répéter à l'infini vers la gauche et la droite (rien de remarquable près des bords gauche et droit). Au-dessus de la silhouette, fond uni magenta pur #FF00FF sans dégradé (sera détouré). La silhouette remplit toute la moitié basse jusqu'au bord inférieur, sans trou, sans personnage. Sujet : forêt d'aquarelle au plan moyen : troncs fins, feuillages ronds vert émeraude et turquoise, quelques gouttes de lumière."
+  },
+  {
+   "fichier": "l2_bg2",
+   "taille": "1024x360",
+   "detourer": true,
+   "sortie": "l2/bg2.png",
+   "raccord": 96,
+   "prompt": "Bande de décor de jeu de plateforme 2D en défilement horizontal, vue de profil, qui doit pouvoir se répéter à l'infini vers la gauche et la droite (rien de remarquable près des bords gauche et droit). Au-dessus de la silhouette, fond uni magenta pur #FF00FF sans dégradé (sera détouré). La silhouette remplit toute la moitié basse jusqu'au bord inférieur, sans trou, sans personnage. Sujet : sous-bois proche : grands troncs, fougères, champignons, ronces, verts profonds et viridian."
+  },
+  {
+   "fichier": "l3_bg0",
+   "taille": "1024x360",
+   "detourer": true,
+   "sortie": "l3/bg0.png",
+   "raccord": 96,
+   "prompt": "Bande de décor de jeu de plateforme 2D en défilement horizontal, vue de profil, qui doit pouvoir se répéter à l'infini vers la gauche et la droite (rien de remarquable près des bords gauche et droit). Au-dessus de la silhouette, fond uni magenta pur #FF00FF sans dégradé (sera détouré). La silhouette remplit toute la moitié basse jusqu'au bord inférieur, sans trou, sans personnage. Sujet : falaises d'ocre lointaines et mesas dorées sous un voile de chaleur, ocre jaune et terre de Sienne pâles."
+  }
+ ]
+}
