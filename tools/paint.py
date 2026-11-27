@@ -10,6 +10,21 @@ S = 24            # pixels par case dans les peintures (affichées x2 dans le je
 rng = np.random.default_rng(11)
 
 
+# Images peintes avec Codex (tools/art/prompts.json, clé « sortie ») : on ne les écrase pas.
+def _codex():
+    try:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'art', 'prompts.json')) as f:
+            return {os.path.normpath(os.path.join(ART, i['sortie'])) for i in json.load(f)['images'] if 'sortie' in i}
+    except (OSError, ValueError, KeyError):
+        return set()
+CODEX = _codex()
+
+
+def keep(path):
+    """Vrai si ce fichier est un visuel Codex déjà présent (à ne pas repeindre)."""
+    return os.path.normpath(path) in CODEX and os.path.exists(path)
+
+
 # ------------------------------------------------------------------ outils
 def box(a, r, axis):
     if r < 1:
@@ -468,6 +483,8 @@ HAZE = [None]
 def save_layer(canvas, alpha, path, haze=0.0):
     if haze > 0 and HAZE[0] is not None:
         canvas = canvas * (1 - haze) + HAZE[0][None, None, :] * haze
+    if keep(path):
+        return
     to_img(canvas, alpha).save(path, optimize=True)
 
 
@@ -673,7 +690,7 @@ def illustrations():
         line = [(940 + i * 9, y0 - i * 7 + math.sin(i * 0.5) * 6) for i in range(40)]
         d.line(line, fill=c + (190,), width=7, joint='curve')
     im = im.filter(ImageFilter.GaussianBlur(0.6))
-    im.save(os.path.join(ART, 'titre.png'), optimize=True)
+    if not keep(os.path.join(ART, 'titre.png')): im.save(os.path.join(ART, 'titre.png'), optimize=True)
     # intro : l'atelier du peintre endormi (silhouettes)
     c = new_canvas(h, w, (0.93, 0.9, 0.84))
     win = np.zeros((h, w), np.float32); win[120:430, 760:1080] = 1
@@ -688,12 +705,12 @@ def illustrations():
         wash(c, bl, hexc(col), 0.6, 0.6, 0.3, 1)
     chair = ellipse_mask(h, w, [(900, 560, 140, 80), (870, 470, 70, 60)])
     wash(c, chair, hexc('#7d7a8a'), 0.6, 0.6, 0.3, 2)
-    to_img(c).save(os.path.join(ART, 'intro.png'), optimize=True)
+    if not keep(os.path.join(ART, 'intro.png')): to_img(c).save(os.path.join(ART, 'intro.png'), optimize=True)
     # fins
-    to_img(landscape(w, h, 0.0, seed=8)).save(os.path.join(ART, 'fin.png'), optimize=True)
+    if not keep(os.path.join(ART, 'fin.png')): to_img(landscape(w, h, 0.0, seed=8)).save(os.path.join(ART, 'fin.png'), optimize=True)
     f = landscape(w, h, 0.0, seed=9, sunrise=True)
     drop_shape(f, 640, 600, 30, '#2b2a4a')
-    to_img(f).save(os.path.join(ART, 'fin_vraie.png'), optimize=True)
+    if not keep(os.path.join(ART, 'fin_vraie.png')): to_img(f).save(os.path.join(ART, 'fin_vraie.png'), optimize=True)
     print('illustrations peintes')
 
 

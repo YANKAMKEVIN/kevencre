@@ -51,7 +51,7 @@ On compte aussi les gouttes d'encre ramassées, le temps et les chutes.
 ## Organisation du projet
 - `scripts/` : le jeu (Player = Sépia, Stroke = Trait d'encre, Level, Boss, Hud, Title…), `scripts/ent/` : objets et ennemis.
 - `levels/` : les 3 niveaux sous forme de grilles de caractères (générées par `tools/build_levels.py`).
-- `art/` : toutes les peintures (terrain, fonds en parallaxe, écran titre, fins), générées par `tools/paint.py` à partir des niveaux.
+- `art/` : les peintures. Le terrain est peint par `tools/paint.py` à partir des niveaux ; l'écran titre, l'intro, les deux fins, les 4 ciels et les fonds en parallaxe ont été peints avec Codex (prompts dans `tools/art/prompts.json`, finition par `tools/art/finir.py`). `tools/paint.py` ne réécrit pas ces visuels Codex.
 - `audio/` : 6 musiques et 28 bruitages synthétisés par `tools/audio_synth.py`.
 - `shaders/couleur.gdshader` : l'effet « monde délavé / couleur qui revient ».
 - `tools/AutoTest.gd` : test qui joue le jeu tout seul et prend des captures (`godot --path . -- --shots=/chemin`) ; `tools/Metrics.gd` mesure les sauts (`-- --metrics`).
