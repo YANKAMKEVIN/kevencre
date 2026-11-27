@@ -18,13 +18,18 @@ func _ready() -> void:
 	cl.add_child(fade)
 	var args := OS.get_cmdline_user_args()
 	if "--check" in args:
+		var bad := 0
 		for d in ["res://scripts/", "res://scripts/ent/", "res://tools/"]:
 			for f in DirAccess.get_files_at(d):
 				if f.ends_with(".gd") and f != "check.gd":
 					if load(d + f) == null:
 						print("ECHEC ", d + f)
+						bad += 1
 		print("CHECK FINI")
-		get_tree().quit()
+		get_tree().quit(1 if bad > 0 else 0)
+		return
+	if "--unit" in args:
+		add_child(load("res://tools/UnitTests.gd").new())
 		return
 	if "--metrics" in args:
 		var m = load("res://tools/Metrics.gd").new()
@@ -38,7 +43,7 @@ func _ready() -> void:
 			return
 	goto("title")
 
-func goto(what: String, arg = null) -> void:
+func goto(what: String, arg = null, replay := false) -> void:
 	if busy:
 		return
 	busy = true
@@ -58,6 +63,7 @@ func goto(what: String, arg = null) -> void:
 		"level":
 			current = load("res://scripts/Level.gd").new()
 			current.num = int(arg)
+			current.replay = replay
 		"ending":
 			current = load("res://scripts/Ending.gd").new()
 	if current is Control:

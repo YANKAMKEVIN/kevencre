@@ -70,6 +70,46 @@ func new_game() -> void:
 	checkpoint.clear()
 	restored.clear()
 
+# ------------------------------------------------------------------ sauvegarde
+# Une seule sauvegarde (format : SaveData), écrite au début de chaque chapitre et à chaque chevalet.
+var save_path := "user://sauvegarde.json"
+
+func save_game() -> bool:
+	var d := SaveData.make(level, has_brush, pigments, drops, drops_level, deaths, time, checkpoint, restored)
+	if not SaveData.is_valid(d):
+		return false
+	# fichier temporaire puis renommage : une coupure ne laisse jamais un fichier à moitié écrit
+	var tmp := save_path + ".tmp"
+	var f := FileAccess.open(tmp, FileAccess.WRITE)
+	if f == null:
+		return false
+	f.store_string(SaveData.to_text(d))
+	f.close()
+	return DirAccess.rename_absolute(tmp, save_path) == OK
+
+func read_save() -> Dictionary:
+	if not FileAccess.file_exists(save_path):
+		return {}
+	return SaveData.parse(FileAccess.get_file_as_string(save_path))
+
+## Recharge la partie ; renvoie le niveau où reprendre, ou 0 si impossible.
+func load_game() -> int:
+	var d := read_save()
+	if d.is_empty():
+		return 0
+	new_game()
+	level = d["level"]
+	has_brush = d["has_brush"]
+	pigments = d["pigments"].duplicate()
+	drops = d["drops"]
+	for k in d["drops_level"]:
+		drops_level[k] = true
+	deaths = d["deaths"]
+	time = float(d["time"])
+	checkpoint = SaveData.checkpoints_of(d)
+	restored = SaveData.restored_of(d)
+	return level
+
 func max_hp() -> int:
 	return 5 + pigments.size()
 

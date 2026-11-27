@@ -24,6 +24,8 @@ func activate(fx := true) -> void:
 	if fx:
 		Game.sfx("checkpoint", -2)
 		level.restore_at(global_position + Vector2(0, -50))
+		if not level.replay:
+			Game.save_game()  # chaque chevalet touché est un point de sauvegarde
 		level.fx.burst(global_position + Vector2(0, -55), 30)
 		pl().hp = Game.max_hp()
 	else:

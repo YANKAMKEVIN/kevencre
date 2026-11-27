@@ -36,10 +36,10 @@ func _ready() -> void:
 	label.add_theme_constant_override("line_spacing", 10)
 	add_child(label)
 	hint = Label.new()
-	hint.text = "Espace pour continuer"
+	hint.text = "Espace ou (A) pour continuer · Échap pour passer"
 	hint.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	hint.position = Vector2(-200, -70)
-	hint.custom_minimum_size = Vector2(400, 0)
+	hint.position = Vector2(-300, -70)
+	hint.custom_minimum_size = Vector2(600, 0)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.add_theme_font_size_override("font_size", 18)
 	hint.add_theme_color_override("font_color", Color(Game.INK, 0.6))
