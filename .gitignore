@@ -2,3 +2,4 @@
 *.wav
 /captures/
 ci-out/
+/.godot-bin/
