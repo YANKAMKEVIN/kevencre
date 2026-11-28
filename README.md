@@ -72,7 +72,7 @@ Le numéro est dans `project.godot` (`application/config/version`), lu par `Game
 ## Tests
 ```bash
 tools/install_godot.sh                  # Godot 4.3 vérifié dans .godot-bin/ (affiche son chemin)
-GODOT=godot tools/test.sh               # tout ce que vérifie la CI, sans écran (≈ 4 min)
+GODOT=godot tools/test.sh               # tout ce que vérifie la CI, sans écran (≈ 5 min, robot compris)
 GODOT=godot tools/test.sh unit          # une étape : import, sizes, check, unit ou parcours
 godot --headless --path . --fixed-fps 60 -- --unit --tests=physics   # une suite (motif dans le nom du fichier)
 GODOT=godot tools/ci.sh                 # le robot joue toute la partie (écran virtuel, comme la CI)

@@ -35,6 +35,8 @@ jobs:
         run: tools/test.sh check
       - name: Tests unitaires et d'intégration
         run: tools/test.sh unit
+      - name: Le robot joue toute la partie sans écran
+        run: tools/test.sh robot
       - name: Journaux
         if: always()
         uses: actions/upload-artifact@v4
