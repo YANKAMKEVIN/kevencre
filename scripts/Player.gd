@@ -1,5 +1,8 @@
 extends CharacterBody2D
-## Sépia, la dernière goutte d'encre. Déplacements, Trait d'encre, dessin du personnage.
+## Sépia, la dernière goutte d'encre. Entrées, déplacements, Trait d'encre, dégâts.
+## L'apparence (écharpe, dessin) est dans player/PlayerLook.gd.
+
+const PlayerLook := preload("res://scripts/player/PlayerLook.gd")
 
 const RUN := 345.0
 const ACC := 3400.0
@@ -57,6 +60,11 @@ var blink := 2.0
 var scarf: Array = []
 var scarf_col := Color(0.85, 0.24, 0.22)
 var dust_t := 0.0
+# tableaux de dessin réutilisés (PlayerLook)
+var scarf_pts := PackedVector2Array()
+var body_pts := PackedVector2Array()
+var outline_pts := PackedVector2Array()
+var eye_pts := PackedVector2Array()
 
 func _ready() -> void:
 	var cs := CollisionShape2D.new()
@@ -70,8 +78,7 @@ func _ready() -> void:
 	safe_margin = 0.06
 	collision_layer = 2
 	collision_mask = 1
-	for i in 7:
-		scarf.append(global_position + Vector2(-i * 5, -22))
+	PlayerLook.init_scarf(self)
 	hp = Game.max_hp()
 	last_safe = global_position
 	z_index = 5
@@ -110,7 +117,7 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0, DEC * delta)
 		velocity.y = minf(velocity.y + GRAV * delta, MAX_FALL)
 		move_and_slide()
-		_update_scarf(delta)
+		PlayerLook.update_scarf(self, delta)
 		queue_redraw()
 		return
 	var ix := _ix()
@@ -223,8 +230,8 @@ func _physics_process(delta: float) -> void:
 	if level and global_position.y > level.bottom_y():
 		level.hazard_hit(self)
 
-	_animate(delta, ix)
-	_update_scarf(delta)
+	PlayerLook.animate(self, delta)
+	PlayerLook.update_scarf(self, delta)
 	queue_redraw()
 
 func _jump() -> void:
@@ -354,102 +361,7 @@ func respawn(at: Vector2) -> void:
 	invuln = 1.0
 	can_dash = Game.has_brush
 	last_safe = at
-	for i in scarf.size():
-		scarf[i] = at + Vector2(-i * 5, -22)
-
-# ------------------------------------------------------------------ animation
-func _animate(delta: float, ix: float) -> void:
-	sq = sq.lerp(Vector2.ONE, 1.0 - exp(-12.0 * delta))
-	if on_floor and absf(velocity.x) > 20:
-		run_t += delta * absf(velocity.x) / 34.0
-	else:
-		run_t = lerpf(run_t, roundf(run_t / PI) * PI, 0.2)
-	blink -= delta
-	if blink < -0.12:
-		blink = randf_range(1.8, 4.5)
-	var target_col: Color = Color(0.86, 0.25, 0.22) if (can_dash or not Game.has_brush) else Color(0.55, 0.53, 0.6)
-	scarf_col = scarf_col.lerp(target_col, 0.25)
-
-func _update_scarf(delta: float) -> void:
-	var anchor := global_position + Vector2(-facing * 3, -24 * sq.y)
-	scarf[0] = anchor
-	for i in range(1, scarf.size()):
-		var p: Vector2 = scarf[i]
-		p += Vector2(-facing * 34.0 - velocity.x * 0.04, 26.0 - velocity.y * 0.03 + sin(t * 7.0 + i) * 6.0) * delta
-		var prev: Vector2 = scarf[i - 1]
-		var d := p - prev
-		if d.length() > 6.0:
-			p = prev + d.normalized() * 6.0
-		scarf[i] = p
+	PlayerLook.reset_scarf(self, at)
 
 func _draw() -> void:
-	if dead:
-		return
-	if invuln > 0.0 and int(t * 18.0) % 2 == 0:
-		modulate.a = 0.45
-	else:
-		modulate.a = 1.0
-	var ink := Game.INK
-	# écharpe (coordonnées du monde -> locales)
-	var pts := PackedVector2Array()
-	for p in scarf:
-		pts.append(p - global_position)
-	for i in range(pts.size() - 1):
-		var w := lerpf(7.0, 2.5, float(i) / pts.size())
-		draw_line(pts[i], pts[i + 1], scarf_col.darkened(0.35), w + 2.5, true)
-	for i in range(pts.size() - 1):
-		var w := lerpf(7.0, 2.5, float(i) / pts.size())
-		draw_line(pts[i], pts[i + 1], scarf_col, w, true)
-	# corps : goutte, déformée autour des pieds
-	var lean := clampf(velocity.x / RUN, -1.3, 1.3) * 0.13
-	if dashing > 0.0:
-		lean = dash_dir.x * 0.3
-	draw_set_transform(Vector2.ZERO, lean, sq)
-	# pieds
-	var fa := sin(run_t) * 5.0
-	var lift := absf(cos(run_t)) * 3.0 if on_floor and absf(velocity.x) > 20 else 0.0
-	if not on_floor:
-		fa = 3.0
-	draw_circle(Vector2(-6 + fa, -3 - lift), 5.0, ink.darkened(0.3))
-	draw_circle(Vector2(6 - fa, -3 - (3.0 - lift if lift > 0 else 0.0)), 5.0, ink.darkened(0.3))
-	# goutte
-	var tip_x := -facing * 7.0 - clampf(velocity.x * 0.02, -9, 9)
-	var tip_y := -46.0 + clampf(velocity.y * 0.008, -4, 6)
-	var body := PackedVector2Array()
-	var c := Vector2(0, -17)
-	var R := 15.0
-	var n := 22
-	for i in n + 1:
-		var a := lerpf(-PI / 2 + 0.75, PI * 1.5 - 0.75, float(i) / n)
-		body.append(c + Vector2(cos(a), sin(a)) * R)
-	var lt := body[body.size() - 1]
-	var rt := body[0]
-	var tip := Vector2(tip_x, tip_y)
-	body.append(lt.lerp(tip, 0.5) + Vector2(-2.5, 0))
-	body.append(tip)
-	body.append(rt.lerp(tip, 0.5) + Vector2(2.5, 0))
-	draw_colored_polygon(body, ink)
-	var outline := body.duplicate()
-	outline.append(body[0])
-	draw_polyline(outline, ink.darkened(0.45), 2.0, true)
-	# reflet
-	draw_circle(c + Vector2(-6 * facing, -6), 3.5, Color(1, 1, 1, 0.22))
-	draw_circle(c + Vector2(-8 * facing, -1), 1.8, Color(1, 1, 1, 0.18))
-	# yeux
-	var ey := -19.0
-	var ex := 4.0 * facing
-	var h := 6.0 if blink > 0 else 1.2
-	for s in [-1, 1]:
-		var ep := Vector2(ex + s * 5.5, ey)
-		_ellipse(ep, Vector2(3.6, h), Color(0.98, 0.96, 0.9))
-		if blink > 0:
-			var look := Vector2(facing * 1.3, clampf(velocity.y * 0.003, -1.5, 1.5))
-			_ellipse(ep + look, Vector2(1.8, 3.2), ink.darkened(0.5))
-	draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
-
-func _ellipse(p: Vector2, r: Vector2, col: Color) -> void:
-	var pts := PackedVector2Array()
-	for i in 14:
-		var a := TAU * i / 14.0
-		pts.append(p + Vector2(cos(a) * r.x, sin(a) * r.y))
-	draw_colored_polygon(pts, col)
+	PlayerLook.draw(self)
