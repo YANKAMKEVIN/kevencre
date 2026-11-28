@@ -250,6 +250,14 @@ func _process(delta: float) -> void:
 		_set_pause(true)
 	ctl.queue_redraw()
 
+## Fenêtre ou onglet en arrière-plan, application mise en veille : le jeu se met en pause
+## (le temps de jeu s'arrête, rien ne bouge) et attend le retour du joueur sur le menu pause.
+func _notification(what: int) -> void:
+	if what != NOTIFICATION_APPLICATION_FOCUS_OUT and what != NOTIFICATION_APPLICATION_PAUSED:
+		return
+	if Game.pause_on_focus_loss and not paused and not dlg_active and level and not level.finished and is_inside_tree():
+		_set_pause(true)
+
 func _set_pause(on: bool) -> void:
 	paused = on
 	pause_box.visible = on
