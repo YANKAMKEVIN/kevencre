@@ -15,6 +15,7 @@ func _ready() -> void:
 			out = a.substr(8)
 	DirAccess.make_dir_recursive_absolute(out)
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	Game.pause_on_focus_loss = false
 	main = get_parent()
 	await get_tree().process_frame
 	await run()
@@ -26,6 +27,8 @@ func w(s: float) -> void:
 	await get_tree().create_timer(s, true, false, true).timeout
 
 func shot(name: String) -> void:
+	if DisplayServer.get_name() == "headless":
+		return   # pas d'image sans écran : le robot joue quand même toute la partie
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png(out + "/" + name + ".png")
 	print("SHOT ", name)

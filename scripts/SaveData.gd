@@ -8,6 +8,7 @@ extends RefCounted
 const VERSION := 1
 const LEVELS := 4        # 3 chapitres + le Délaveur
 const MAX_PIGMENTS := 5
+const MAX_BYTES := 1 << 20   # au-delà, le fichier n'est pas une sauvegarde du jeu
 
 
 ## Photographie de la partie (au début d'un chapitre ou à un chevalet).
@@ -41,6 +42,8 @@ static func make(level: int, has_brush: bool, pigments: Dictionary, drops: int, 
 ## Texte JSON -> sauvegarde valide à la version courante, ou {} si illisible,
 ## abîmée ou venant d'une version plus récente du jeu.
 static func parse(text: String) -> Dictionary:
+	if text.length() > MAX_BYTES:
+		return {}
 	var json := JSON.new()
 	if json.parse(text) != OK or typeof(json.data) != TYPE_DICTIONARY:
 		return {}
@@ -49,17 +52,38 @@ static func parse(text: String) -> Dictionary:
 
 
 ## Amène une sauvegarde d'une version antérieure à VERSION, et remet en entiers
-## les nombres que JSON relit en flottants.
+## les nombres que JSON relit en flottants. Renvoie {} si la version est absente,
+## inconnue ou plus récente que le jeu.
 static func migrate(d: Dictionary) -> Dictionary:
+	return migrate_with(d, MIGRATIONS, VERSION)
+
+
+## Étapes de migration : version de départ -> nom de la fonction statique qui la fait passer à la suivante.
+## Exemple, le jour où le format change : VERSION = 2 et MIGRATIONS = {1: "_v1_to_v2"}.
+const MIGRATIONS := {}
+
+
+## Migration générique (testée avec de fausses étapes dans tests/unit/test_save.gd).
+## steps : version -> Callable (Dictionary -> Dictionary) ou nom d'une fonction statique de SaveData.
+static func migrate_with(d: Dictionary, steps: Dictionary, target: int) -> Dictionary:
 	var out := d.duplicate(true)
 	var v: Variant = out.get("version", null)
 	if typeof(v) != TYPE_INT and typeof(v) != TYPE_FLOAT:
 		return {}
-	var version := int(v)
-	if version < 1 or version > VERSION:
+	if typeof(v) == TYPE_FLOAT and float(v) != floorf(v):
 		return {}
-	# Étapes futures, à chaîner ici :
-	# if version == 1: out = _v1_to_v2(out); version = 2
+	var version := int(v)
+	if version < 1 or version > target:
+		return {}
+	while version < target:
+		if not steps.has(version):
+			return {}
+		var step: Variant = steps[version]
+		var next: Variant = step.call(out) if step is Callable else Callable(SaveData, str(step)).call(out)
+		if not (next is Dictionary) or next.is_empty():
+			return {}
+		out = next
+		version += 1
 	out["version"] = version
 	for k in ["level", "drops", "deaths"]:
 		if typeof(out.get(k)) == TYPE_FLOAT:

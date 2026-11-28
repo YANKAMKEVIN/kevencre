@@ -19,17 +19,19 @@ func _ready() -> void:
 	var args := OS.get_cmdline_user_args()
 	if "--check" in args:
 		var bad := 0
-		for d in ["res://scripts/", "res://scripts/ent/", "res://tools/"]:
-			for f in DirAccess.get_files_at(d):
-				if f.ends_with(".gd") and f != "check.gd":
-					if load(d + f) == null:
-						print("ECHEC ", d + f)
-						bad += 1
-		print("CHECK FINI")
-		get_tree().quit(1 if bad > 0 else 0)
+		var files := scripts_in("res://")
+		for f in files:
+			if load(f) == null:
+				print("ECHEC ", f)
+				bad += 1
+		print("CHECK FINI : %d script(s), %d en erreur" % [files.size(), bad])
+		get_tree().quit(1 if bad > 0 or files.is_empty() else 0)
 		return
 	if "--unit" in args:
-		add_child(load("res://tools/UnitTests.gd").new())
+		add_child(load("res://tests/Runner.gd").new())
+		return
+	if "--parcours" in args:
+		add_child(load("res://tests/parcours/ParcoursRunner.gd").new())
 		return
 	if "--metrics" in args:
 		var m: Node = load("res://tools/Metrics.gd").new()
@@ -42,6 +44,18 @@ func _ready() -> void:
 			add_child(t)
 			return
 	goto("title")
+
+## Tous les scripts .gd du projet (hors .godot et addons), triés.
+static func scripts_in(dir: String) -> Array[String]:
+	var out: Array[String] = []
+	for f in DirAccess.get_files_at(dir):
+		if f.ends_with(".gd"):
+			out.append(dir.path_join(f))
+	for d in DirAccess.get_directories_at(dir):
+		if not d.begins_with(".") and d != "addons":
+			out.append_array(scripts_in(dir.path_join(d)))
+	out.sort()
+	return out
 
 func goto(what: String, arg: Variant = null, replay := false) -> void:
 	if busy:

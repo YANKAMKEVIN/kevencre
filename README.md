@@ -50,24 +50,36 @@ On compte aussi les gouttes d'encre ramassées, le temps et les chutes.
 
 ## Organisation du projet
 - `scripts/` : le jeu (Player = Sépia, Stroke = Trait d'encre, Level, Boss, Hud, Title…), `scripts/ent/` : objets et ennemis.
+  - `scripts/level/` : `LevelGrid` (lecture des grilles, logique pure), `LevelBuilder` (grille → nœuds), `LevelStory` (panneaux et dialogues).
+  - `scripts/player/PlayerLook.gd` : apparence de Sépia (écharpe, dessin), séparée de sa physique.
 - `levels/` : les 3 niveaux sous forme de grilles de caractères (générées par `tools/build_levels.py`).
 - `art/` : les peintures. Le terrain est peint par `tools/paint.py` à partir des niveaux ; l'écran titre, l'intro, les deux fins, les 4 ciels et les fonds en parallaxe ont été peints avec Codex (prompts dans `tools/art/prompts.json`, finition par `tools/art/finir.py`). `tools/paint.py` ne réécrit pas ces visuels Codex.
 - `audio/` : 6 musiques et 28 bruitages synthétisés par `tools/audio_synth.py`.
 - `shaders/couleur.gdshader` : l'effet « monde délavé / couleur qui revient ».
-- `tools/AutoTest.gd` : test qui joue le jeu tout seul et prend des captures (`godot --path . -- --shots=/chemin`) ; `tools/Metrics.gd` mesure les sauts (`-- --metrics`).
+- `tests/` : tests headless (`unit/`, `integration/`) et analyse de parcours (`parcours/`).
+- `tools/AutoTest.gd` : robot qui joue le jeu tout seul et prend des captures (`godot --path . -- --shots=/chemin`) ; `tools/Metrics.gd` mesure les sauts (`-- --metrics`).
 
 Pour modifier un niveau : édite `tools/build_levels.py`, puis relance `python3 tools/build_levels.py` et `python3 tools/paint.py`.
 
 ## Sauvegarde
 La partie est sauvegardée au début de chaque chapitre et à chaque chevalet touché (`user://sauvegarde.json`) ; « Continuer » apparaît alors sur l'écran titre et reprend au dernier chevalet, avec les pigments, les gouttes, les chutes, le temps et les couleurs déjà rendues au paysage. Le menu « Chapitres » sert au rejeu et n'écrase pas la sauvegarde.
-Le format est versionné (`scripts/SaveData.gd`, `VERSION`) : toute évolution incrémente la version et ajoute une migration ; une sauvegarde abîmée ou plus récente que le jeu est ignorée.
+Le format est versionné (`scripts/SaveData.gd`, `VERSION`) : toute évolution incrémente la version et ajoute une étape dans `MIGRATIONS` (les étapes s'enchaînent, v1 → v2 → v3…) ; une sauvegarde abîmée ou plus récente que le jeu est ignorée.
+L'écriture passe par un fichier temporaire renommé ensuite, et la sauvegarde précédente est gardée en `sauvegarde.json.bak` : si le fichier principal est abîmé ou effacé, la partie reprend depuis cette copie.
 
 ## Version
 Le numéro est dans `project.godot` (`application/config/version`), lu par `Game.version()` et affiché sur l'écran titre.
 
 ## Tests
 ```bash
-godot --headless --path . -- --check   # tous les scripts se chargent
-godot --headless --path . -- --unit    # tests unitaires (sauvegarde, version)
-GODOT=godot tools/ci.sh                # le robot joue toute la partie (comme la CI)
+tools/install_godot.sh                  # Godot 4.3 vérifié dans .godot-bin/ (affiche son chemin)
+GODOT=godot tools/test.sh               # tout ce que vérifie la CI, sans écran (≈ 5 min, robot compris)
+GODOT=godot tools/test.sh unit          # une étape : import, sizes, check, unit ou parcours
+godot --headless --path . --fixed-fps 60 -- --unit --tests=physics   # une suite (motif dans le nom du fichier)
+GODOT=godot tools/ci.sh                 # le robot joue toute la partie (écran virtuel, comme la CI)
 ```
+- `--check` : tous les scripts du projet se chargent.
+- `--unit` : `tests/unit` et `tests/integration` (sauvegarde et migrations, physique de Sépia, objets, chevalets, Délaveur, pause).
+- `--parcours` : `tests/parcours`. Un modèle de Sépia (`MoveSim`, mêmes constantes que `Player.gd`) est d'abord comparé au vrai moteur sur les mêmes entrées ; puis, pour chaque chapitre, des milliers de suites d'entrées (sauts, rebonds, Traits d'encre) sont jouées depuis le départ pour vérifier que l'autel, chaque chevalet, chaque pigment et la sortie sont atteignables.
+- `tools/check_sizes.sh` : aucun script de plus de 400 lignes.
+
+La CI (`.github/workflows/tests.yml`) lance ces trois volets en parallèle et bloque si l'un échoue.
