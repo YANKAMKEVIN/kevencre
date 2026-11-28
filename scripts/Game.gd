@@ -38,6 +38,7 @@ var timing := false
 var checkpoint := {}        # niveau -> Vector2 (position au sol)
 var restored := {}          # niveau -> Array de Vector2 (vagues de couleur)
 var stroke_i := 0
+var pause_on_focus_loss := true   # désactivé par les robots de test
 
 var _sfx: Array = []
 var _sfx_i := 0
@@ -76,7 +77,12 @@ func new_game() -> void:
 
 # ------------------------------------------------------------------ sauvegarde
 # Une seule sauvegarde (format : SaveData), écrite au début de chaque chapitre et à chaque chevalet.
+# La précédente sauvegarde valide est gardée à côté (.bak) : si le fichier principal est abîmé
+# (coupure, disque plein, édition à la main), on reprend depuis la copie au lieu de tout perdre.
 var save_path := "user://sauvegarde.json"
+
+func backup_path() -> String:
+	return save_path + ".bak"
 
 func save_game() -> bool:
 	var d := SaveData.make(level, has_brush, pigments, drops, drops_level, deaths, time, checkpoint, restored)
@@ -89,12 +95,29 @@ func save_game() -> bool:
 		return false
 	f.store_string(SaveData.to_text(d))
 	f.close()
-	return DirAccess.rename_absolute(tmp, save_path) == OK
+	if not _read_file(save_path).is_empty():
+		DirAccess.copy_absolute(save_path, backup_path())
+	if DirAccess.rename_absolute(tmp, save_path) != OK:
+		DirAccess.remove_absolute(tmp)
+		return false
+	return true
 
-func read_save() -> Dictionary:
-	if not FileAccess.file_exists(save_path):
+func _read_file(path: String) -> Dictionary:
+	if not FileAccess.file_exists(path):
 		return {}
-	return SaveData.parse(FileAccess.get_file_as_string(save_path))
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		return {}
+	if f.get_length() > SaveData.MAX_BYTES:
+		return {}
+	return SaveData.parse(f.get_as_text())
+
+## Sauvegarde lisible : le fichier principal, sinon la copie de secours, sinon {}.
+func read_save() -> Dictionary:
+	var d := _read_file(save_path)
+	if d.is_empty():
+		d = _read_file(backup_path())
+	return d
 
 ## Recharge la partie ; renvoie le niveau où reprendre, ou 0 si impossible.
 func load_game() -> int:
